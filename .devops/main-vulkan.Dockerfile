@@ -2,11 +2,11 @@ FROM ubuntu:24.04 AS build
 WORKDIR /app
 
 RUN apt-get update && \
-  apt-get install -y build-essential wget cmake git libvulkan-dev glslc \
+  apt-get install -y build-essential wget cmake git libvulkan-dev spirv-headers glslc \
   && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 COPY .. .
-RUN make base.en CMAKE_ARGS="-DGGML_VULKAN=1"
+RUN --mount=type=secret,id=HF_TOKEN,required=false,env=HF_TOKEN make base.en CMAKE_ARGS="-DGGML_VULKAN=1"
 
 FROM ubuntu:24.04 AS runtime
 WORKDIR /app
